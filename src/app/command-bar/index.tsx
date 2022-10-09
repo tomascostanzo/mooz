@@ -42,6 +42,12 @@ const MyCommandBar: FunctionComponent<MyCommandBarProps> = ({
     const { isFullscreen } = useFullScreen()
     const onAbort = useAbort()
 
+    const onLeave = () => {
+        stopUserMedia('videoinput')
+        stopUserMedia('audioinput')
+        onAbort()
+    }
+
     const isRemoteDisplay = !!useRecoilValue(remoteStreamsState).find(r => r.isDisplay)
 
     const [mediaBtnsDisabled, setMediaBtnsDisabled] = useState(false)
@@ -228,7 +234,7 @@ const MyCommandBar: FunctionComponent<MyCommandBarProps> = ({
             // eslint-disable-next-line
             commandBarButtonAs: ({ text, key }) => (
                 <DefaultButton
-                    onClick={() => onAbort()}
+                    onClick={() => onLeave()}
                     text={text}
                     key={key}
                     styles={LeaveButtonStyles}
