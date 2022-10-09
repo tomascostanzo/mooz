@@ -5,7 +5,6 @@ import VideoPreview from './preview'
 import CreateMeeting from './create'
 import JoinMeeting from './join'
 import { container, containerInner, heading, mr4, options } from './styles'
-import CreateDefaultMeeting from './create_default'
 
 const pivotStyles: Partial<IPivotStyles> = {
     root: {
@@ -35,9 +34,27 @@ const Landing: FunctionComponent = () => {
     return (
         <Stack className={container} horizontalAlign="center">
             <Stack.Item className={containerInner}>
+                <Text className={heading} variant="superLarge">
+                    Welcome to mooz
+                </Text>
                 <Stack horizontalAlign="center" horizontal wrap>
                     <Stack.Item className={mr4} grow>
-                        <CreateDefaultMeeting />
+                        <Pivot
+                            defaultSelectedKey={defaultKey}
+                            className={options}
+                            styles={pivotStyles}
+                            aria-label="Create or join a meeting"
+                        >
+                            <PivotItem itemKey="create" headerText="Create new meeting">
+                                <CreateMeeting />
+                            </PivotItem>
+                            <PivotItem itemKey="join" headerText="Join a meeting">
+                                <JoinMeeting defaultId={defaultId} />
+                            </PivotItem>
+                        </Pivot>
+                    </Stack.Item>
+                    <Stack.Item>
+                        <VideoPreview />
                     </Stack.Item>
                 </Stack>
             </Stack.Item>

@@ -1,5 +1,6 @@
-import { atom, DefaultValue, selector } from 'recoil'
+import { atom, DefaultValue, selector, useRecoilState } from 'recoil'
 import { Socket, io } from 'socket.io-client'
+import { preferencesState } from './local'
 
 export const createSocket = (): Socket => {
     const port = process.env.REACT_APP_SOCKET_PORT
@@ -14,6 +15,27 @@ export const createSocket = (): Socket => {
     // })
 
     return socket
+}
+
+export const joinDefaultRoom = (personName: string, socket: Socket, setPreferences: (preferences: any) => void, onError: () => void): void => {
+    const meetingName = "bugaMeeting"
+    const max = '20'
+    const room: Room = {
+        name: meetingName,
+        created_by: personName,
+        opts: {
+            maxPeople: max,
+        },
+    }
+    socket.emit('create_buga_room', room, ({ isError }: { isError: boolean }) => {
+        // on success it should redirect to main app via 'joined_room' event listened in src/index
+        if (isError && onError) {
+            onError()
+        }
+        if(setPreferences){
+            setPreferences({ name: personName })
+        }        
+    })
 }
 
 export const socketState = atom<Socket>({

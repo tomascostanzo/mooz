@@ -72,6 +72,22 @@ io.on('connection', (socket: Socket) => {
         }
     })
 
+    socket.on('create_buga_room', (room: Room, cb) => {
+        try {
+            const roomId = "bugaMeeting"
+            room.id = roomId
+
+            socket.join(roomId)
+            roomsCache.set<Room>(roomId, room)
+            io.to(socket.id).emit('joined_room', room)
+
+            cb({ isError: false })
+        } catch (err) {
+            console.error(err)
+            cb({ isError: true })
+        }
+    })
+
     socket.on('join_room', async (opts, cb) => {
         try {
             const { name, link } = opts
@@ -204,6 +220,6 @@ function getRoomFromLink(link: string): Room | undefined {
     return id !== undefined ? roomsCache.get(id) : undefined
 }
 
-httpServer.listen(process.env.PORT || 5000, () => {
-    console.log('listening on port', process.env.PORT || 5000)
+httpServer.listen(process.env.PORT || 5002, () => {
+    console.log('listening on port', process.env.PORT || 5002)
 })
